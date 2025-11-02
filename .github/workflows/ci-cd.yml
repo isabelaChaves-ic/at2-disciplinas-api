@@ -1,0 +1,31 @@
+name: CI/CD com Maven e Upload de Artefato
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-e-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout do código
+      uses: actions/checkout@v3
+
+    - name: Configurar JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: 'maven'
+
+    - name: Build, Test e Package com Maven
+      run: mvn -B package --file pom.xml
+
+    - name: Upload do Artefato (.jar)
+      uses: actions/upload-artifact@v3
+      with:
+        name: disciplina-api-jar
+        path: target/*.jar
